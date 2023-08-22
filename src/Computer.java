@@ -1,3 +1,11 @@
+/**
+ * This Class is composed by different constructor as default, parameters and copy constructor,
+ * Attributes:
+ * Brand = Computer brand (String)
+ * Model = Computer Model (String)
+ * SN = Computer Serial (long) static
+ * Price = Computer Price (double)
+ */
 public class Computer {
     private String brand;
     private String model;
