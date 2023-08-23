@@ -7,6 +7,7 @@
 // This program shows to user a menu to select different options to do on an Array of Objects what is an inventory of computers
  	
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -52,39 +53,93 @@ public class Demo {
 
     public static void printMenu(Computer[] inventory){
         System.out.println();
-        System.out.println("      ***What do you want to do?***");
-        int optionSelected = 0;
-        while ( optionSelected <=0 || optionSelected >5) {
-            System.out.println();
-            System.out.println("1.\tEnter new computers (password required)");
-            System.out.println("2.\tChange information of a computer (password required)");
-            System.out.println("3.\tDisplay all computers7 by a specific brand");
-            System.out.println("4.\tDisplay all computers under a certain a price.");
-            System.out.println("5.\tQuit");
-            System.out.print("Please enter your choice >");
-            try{
-                Scanner kb = new Scanner(System.in); // hacer una excepcion aqui
-                optionSelected = kb.nextInt();
-            }
-            catch(Exception e){
-                System.out.println("Please try again");   
-             }
-            
-        }
-        act(optionSelected, inventory);
-    }
     
+                System.out.println("      ***What do you want to do?***");
+                int optionSelected = 0;
+                while ( optionSelected <=0 || optionSelected >5) {
+                    System.out.println();
+                    System.out.println("1.\tEnter new computers (password required)");
+                    System.out.println("2.\tChange information of a computer (password required)");
+                    System.out.println("3.\tDisplay all computers7 by a specific brand");
+                    System.out.println("4.\tDisplay all computers under a certain a price.");
+                    System.out.println("5.\tQuit");
+                    System.out.print  ("Please enter your choice >");
+                    try{
+                        Scanner kb = new Scanner(System.in); 
+                        optionSelected = kb.nextInt();
+                    }
+                    catch(Exception e){
+                        System.out.println("Please try again");   
+                    }
+                    
+                
+                act(optionSelected, inventory);
+            
+            
+            }
+            
+            }
+    
+    private static Computer[] printMenuComputer(Computer[] inventory, int position){
+        int optionSelected = 0;
+                System.out.println("***What information would you like to change?***");
+                System.out.println();
+                System.out.println("1.\tBrand");
+                System.out.println("2.\tModel");
+                System.out.println("3.\tSN");
+                System.out.println("4.\tPrice");
+                System.out.println("5.\tQuit");
+                System.out.println("Enter your choice>");
+                 Scanner kb = new Scanner(System.in); 
+                 try{
+                       
+                       optionSelected  = kb.nextInt();
+                    }
+                catch(Exception e){
+                        System.out.println("Please try again");   
+                }
+
+                switch(optionSelected){
+                  case 1:
+                    System.out.println("Enter new Brand:");
+                    String brand = kb.next();
+                    inventory[position].setBrand(brand);
+                  case 2:
+                  case 3:
+                  case 4:
+                  case 5:
+
+            
+                }
+
+           return inventory;
+              
+    }
 
     private static void act(int option, Computer[] inventory) {  
+        Computer[] auxComp = inventory;
         switch(option){
             case 1:
                 if(login()){
                     System.out.println("Successful Login");
-                    newComputers(inventory);
+                    auxComp = newComputers(inventory);
+                    
+                    inventory = auxComp;
+                       System.out.println("ahora" + Arrays.toString(inventory));
+                    printMenu(inventory);
                 }else{
                     printMenu(inventory);
                 }
-
+                break;
+            case 2:
+                if(login()){
+                    System.out.println("Successful Login");
+                    auxComp = updateComputer(inventory);
+                    inventory = auxComp;
+                     printMenu(inventory);
+                }else{
+                    printMenu(inventory);
+                }
                 break;
             default:
                 
@@ -92,6 +147,41 @@ public class Demo {
         }
         
     }
+
+
+private static Computer[] updateComputer(Computer[] inventory) {
+    System.out.println("recibo" + Arrays.toString(inventory));
+    Computer[] auxComp = inventory;
+    Scanner kb = new Scanner(System.in);
+    int lenght = inventory.length;
+     System.out.println("Please Enter the position of computer you need to update, less than " + lenght + " ...");
+       int optionSelected = kb.nextInt();
+       if(optionSelected > lenght){
+        System.out.println("The position is not in the inventory");
+       }else if(inventory[optionSelected] == null){
+            String yn = "u";
+            
+            while( !(yn.toLowerCase().equals("n") || yn.toLowerCase().equals("y")) ){
+                System.out.println("The position is empty, Do you want to create a new Computer with new values? (Y) or back to main menu? (N)");
+                yn = kb.next();
+                if(yn.toLowerCase().equals("y")){
+                    auxComp = newComputers(inventory);
+                }else if(yn.toLowerCase().equals("n") ){
+                    printMenu(inventory);
+                }
+               
+            }
+        }else{ //valid position
+            System.out.println("antes de actualizar");
+                    int auxPosition = optionSelected + 1;
+                    System.out.println("Computer#: " + auxPosition);
+                    System.out.println(inventory[optionSelected].toString());
+                    printMenuComputer(inventory, optionSelected);
+                }
+        return inventory;
+
+    }
+
 
 
 private static boolean validateComputer(Computer[] inventory, int numComputers ){
@@ -120,7 +210,7 @@ private static boolean validateComputer(Computer[] inventory, int numComputers )
          return true;
 
 }
-    private static void newComputers(Computer[] inventory) {
+    private static Computer[] newComputers(Computer[] inventory) {
         // Check space in Array then insert computer
         System.out.println("How many computers do you want to enter");
         Scanner kb = new Scanner(System.in);
@@ -133,24 +223,30 @@ private static boolean validateComputer(Computer[] inventory, int numComputers )
             for(int i = 0; i < numComputers; i++) {
                 iplus = i + 1;
                 Computer c = new Computer();
-                System.out.println("Enter BRAND of computer " + iplus);
+                System.out.println();
+                System.out.println("Enter BRAND of computer... " + iplus);
                 data = kb.next();
                 c.setBrand(data);
                
-                System.out.println("Enter MODEL of computer " + iplus);
+                System.out.println("Enter MODEL of computer... " + iplus);
                 data = kb.next();
                 c.setModel(data);
-                System.out.println("Enter PRICE of computer " + iplus);
+                System.out.println("Enter PRICE of computer... " + iplus);
                 prix = kb.nextInt();
                 c.setPrice(prix);
                 
-                //validar el espacio vacio o posicion vacia
-                inventory[i] = c;
+                //valid empty space or empty position 
+                 if(inventory[i] == null) {
+                    inventory[i] = c;
+                 }else{
+                    continue;
+                 }
             }
-            
+       
         }
         //Check space on inventory
-        boolean validNumber = false;
+    System.out.println(Arrays.toString(inventory));
+        return inventory;
        
     }
 

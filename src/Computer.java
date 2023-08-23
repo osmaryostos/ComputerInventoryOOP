@@ -69,12 +69,11 @@ public class Computer {
 
     @Override
     public String toString() {
-        return "Computer{" +
-                "brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", SN=" + SN +
-                ", price=" + price +
-                '}';
+        return 
+                "Brand:" + brand + '\n' +
+                "ComputerModel:" + model + '\n' +
+                "SN:" + SN + '\n' +
+                "ComputerPrice=" + price + '\n';
     }
 
    public static void findNumberOfCreatedComputers(){
