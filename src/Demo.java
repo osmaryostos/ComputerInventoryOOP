@@ -47,14 +47,14 @@ public class Demo {
 
     public static void printMenu(Computer[] inventory) {
         System.out.println();
-
-        System.out.println("      ***What do you want to do?***");
+        
         int optionSelected = 0;
-        while (optionSelected <= 0 || optionSelected > 5) {
+        while (optionSelected != 5) {
             System.out.println();
+            System.out.println("      ***What do you want to do?***");
             System.out.println("1.\tEnter new computers (password required)");
             System.out.println("2.\tChange information of a computer (password required)");
-            System.out.println("3.\tDisplay all computers7 by a specific brand");
+            System.out.println("3.\tDisplay all computers by a specific brand");
             System.out.println("4.\tDisplay all computers under a certain a price.");
             System.out.println("5.\tQuit");
             System.out.print("Please enter your choice >");
@@ -85,49 +85,68 @@ public class Demo {
             Scanner kb = new Scanner(System.in);
             String brand, model;
             double prix;
-            try {
+                try {
 
-                optionSelected = kb.nextInt();
-            } catch (Exception e) {
-                System.out.println("Please try again");
-            }
-            Computer[] auxinventory;
-            switch (optionSelected) {
-                case 1:
-                    System.out.println("Enter new Brand:");
-                    brand = kb.next();
-                    inventory[position].setBrand(brand);
-                case 2:
-                    System.out.println("Enter new Model:");
-                    model = kb.next();
-                    inventory[position].setModel(model);
-                case 3:
-                    System.out.println("Enter SN:");
-                    String serial = kb.next();
-                    //inventory[position].setSN(serial); //se debe cambiar?
-                case 4:
-                    System.out.println("Enter new Model:");
-                    prix = kb.nextInt();
-                    inventory[position].setPrice(prix);
-                case 5:
-                    System.out.println("....SO, HAVE A GOOD DAY =)");
+                    optionSelected = kb.nextInt();
+                } catch (Exception e) {
+                    System.out.println("Please try again");
+                }
+            
+                switch (optionSelected) {
+                    case 1:
+                        System.out.println("Enter new Brand:");
+                        brand = kb.next();
+                        inventory[position].setBrand(brand);
+                         System.out.println("\n +++Modified Computer+++");
+                         System.out.println(inventory[position].toString());
+                        break;
+                    case 2:
+                        System.out.println("Enter new Model:");
+                        model = kb.next();
+                        inventory[position].setModel(model);
+                        System.out.println("Modified Computer:");
+                         System.out.println(inventory[position].toString());
+                        break;
+                    case 3:
+                        System.out.println("Enter SN:");
+                        System.out.println("I am sorry, this is a unique number \n");
+                        //String serial = kb.next();
+                        //inventory[position].setSN(serial); //se debe cambiar?
+                        break;
+                    case 4:
+                        System.out.println("Enter new Price:");
+                        prix = kb.nextInt();
+                        inventory[position].setPrice(prix);
+                        System.out.println("Modified Computer:");
+                        System.out.println(inventory[position].toString());
+                        break;
+                    case 5:
+                        System.out.println("....SO, HAVE A GOOD DAY =)");
+                        break;
+                    default:
+                        break;    
+                
             }
         }
-
         return inventory;
 
     }
 
     private static Computer[] findCheaperThan(Computer[] inventory, double prix) {
+        if(emptyInventory(inventory)){
+            return inventory;
+        }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
+        System.out.println("////List of computers founded/////");
         for (int i = 0; i < inventory.length; i++) {
-            System.out.println("////List of computers founded/////");
-            if (inventory[0].getPrice() <= prix) {
+            
+            if (inventory[i].getPrice() <= prix) {
                 System.out.println(inventory[i].toString());
                 // Copy constructor
                 Computer cfilter = new Computer(inventory[i]);
                 auxinventory[j] = cfilter;
+                j++;
             }
         }
 
@@ -135,16 +154,20 @@ public class Demo {
     }
 
     private static Computer[] findComputersByBrand(Computer[] inventory, String brand) {
+        if(emptyInventory(inventory)){
+            return inventory;
+        }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
-        for (int i = 0; i < inventory.length; i++) {
-            System.out.println("////List of computers founded/////");
-            if (inventory[0].getBrand().equals(brand)) {
+        System.out.println("////List of computers founded/////");
+        for (int i = 0; i < inventory.length; ++i) { 
+            if (inventory[i].getBrand().equals(brand)) {
 
                 System.out.println(inventory[i].toString());
                 // Copy constructor
                 Computer cfilter = new Computer(inventory[i]);
                 auxinventory[j] = cfilter;
+                j++;
             }
         }
 
@@ -157,7 +180,7 @@ public class Demo {
         switch (option) {
             case 1:
                 if (login()) {
-                    System.out.println("Successful Login");
+                    System.out.println("Successful Login... \n");
                     auxComp = newComputers(inventory);
 
                     inventory = auxComp;
@@ -181,10 +204,12 @@ public class Demo {
                 String brand = kb.next();
                 Computer[] auxinventory;
                 auxinventory = findComputersByBrand(inventory, brand);
+                break;
             case 4:
                 System.out.println("Enter Price:");
                 double prix = kb.nextInt();
-                auxinventory = findCheaperThan(inventory, prix);    
+                auxinventory = findCheaperThan(inventory, prix);   
+                break; 
             default:
 
         }
@@ -239,7 +264,7 @@ public class Demo {
         // System.out.println("We have only " + spaceInventory + " slots avalaibles");
 
         if (spaceInventory == 0) {
-            System.out.println("There is any space");
+            System.out.println("\n There is any space \n");
             return false;
         }
         if (numComputers > spaceInventory) {
@@ -250,6 +275,17 @@ public class Demo {
 
         return true;
 
+    }
+    private static boolean emptyInventory(Computer[] inventory){
+        int spaceInventory = 0;
+        for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] == null)   spaceInventory++;
+            }
+        if(spaceInventory == inventory.length || inventory.length == 0 || inventory == null){
+            System.out.println("\n +++This inventory is empty =(, try add some computers++++");
+            return true; //all spaces are empties
+        } 
+        return false;
     }
 
     private static Computer[] newComputers(Computer[] inventory) {
@@ -298,7 +334,7 @@ public class Demo {
 
         while (countErrors < 3) {
 
-            System.out.println("Enter Password");
+            System.out.println("\n Enter Password");
             String userPassw = kb.next();
 
             if (PASSWORD.equals(userPassw)) {
