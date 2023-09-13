@@ -6,6 +6,8 @@
 // 
 // This program shows to user a menu to select different options to do on an Array of Objects what is an inventory of computers
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
@@ -47,7 +49,7 @@ public class Demo {
 
     public static void printMenu(Computer[] inventory) {
         System.out.println();
-        
+
         int optionSelected = 0;
         while (optionSelected != 5) {
             System.out.println();
@@ -85,47 +87,47 @@ public class Demo {
             Scanner kb = new Scanner(System.in);
             String brand, model;
             double prix;
-                try {
+            try {
 
-                    optionSelected = kb.nextInt();
-                } catch (Exception e) {
-                    System.out.println("Please try again");
-                }
-            
-                switch (optionSelected) {
-                    case 1:
-                        System.out.println("Enter new Brand:");
-                        brand = kb.next();
-                        inventory[position].setBrand(brand);
-                         System.out.println("\n +++Modified Computer+++");
-                         System.out.println(inventory[position].toString());
-                        break;
-                    case 2:
-                        System.out.println("Enter new Model:");
-                        model = kb.next();
-                        inventory[position].setModel(model);
-                        System.out.println("Modified Computer:");
-                         System.out.println(inventory[position].toString());
-                        break;
-                    case 3:
-                        System.out.println("Enter SN:");
-                        System.out.println("I am sorry, this is a unique number \n");
-                        //String serial = kb.next();
-                        //inventory[position].setSN(serial); //se debe cambiar?
-                        break;
-                    case 4:
-                        System.out.println("Enter new Price:");
-                        prix = kb.nextInt();
-                        inventory[position].setPrice(prix);
-                        System.out.println("Modified Computer:");
-                        System.out.println(inventory[position].toString());
-                        break;
-                    case 5:
-                        System.out.println("....SO, HAVE A GOOD DAY =)");
-                        break;
-                    default:
-                        break;    
-                
+                optionSelected = kb.nextInt();
+            } catch (Exception e) {
+                System.out.println("Please try again");
+            }
+
+            switch (optionSelected) {
+                case 1:
+                    System.out.println("Enter new Brand:");
+                    brand = kb.next();
+                    inventory[position].setBrand(brand);
+                    System.out.println("\n +++Modified Computer+++");
+                    System.out.println(inventory[position].toString());
+                    break;
+                case 2:
+                    System.out.println("Enter new Model:");
+                    model = kb.next();
+                    inventory[position].setModel(model);
+                    System.out.println("Modified Computer:");
+                    System.out.println(inventory[position].toString());
+                    break;
+                case 3:
+                    System.out.println("Enter SN:");
+                    System.out.println("I am sorry, this is a unique number \n");
+                    // String serial = kb.next();
+                    // inventory[position].setSN(serial); //se debe cambiar?
+                    break;
+                case 4:
+                    System.out.println("Enter new Price:");
+                    prix = kb.nextInt();
+                    inventory[position].setPrice(prix);
+                    System.out.println("Modified Computer:");
+                    System.out.println(inventory[position].toString());
+                    break;
+                case 5:
+                    System.out.println("....SO, HAVE A GOOD DAY =)");
+                    break;
+                default:
+                    break;
+
             }
         }
         return inventory;
@@ -133,14 +135,14 @@ public class Demo {
     }
 
     private static Computer[] findCheaperThan(Computer[] inventory, double prix) {
-        if(emptyInventory(inventory)){
+        if (emptyInventory(inventory)) {
             return inventory;
         }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
         System.out.println("////List of computers founded/////");
         for (int i = 0; i < inventory.length; i++) {
-            
+
             if (inventory[i].getPrice() <= prix) {
                 System.out.println(inventory[i].toString());
                 // Copy constructor
@@ -154,13 +156,13 @@ public class Demo {
     }
 
     private static Computer[] findComputersByBrand(Computer[] inventory, String brand) {
-        if(emptyInventory(inventory)){
+        if (emptyInventory(inventory)) {
             return inventory;
         }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
         System.out.println("////List of computers founded/////");
-        for (int i = 0; i < inventory.length; ++i) { 
+        for (int i = 0; i < inventory.length; ++i) {
             if (inventory[i].getBrand().equals(brand)) {
 
                 System.out.println(inventory[i].toString());
@@ -208,10 +210,33 @@ public class Demo {
             case 4:
                 System.out.println("Enter Price:");
                 double prix = kb.nextInt();
-                auxinventory = findCheaperThan(inventory, prix);   
-                break; 
+                auxinventory = findCheaperThan(inventory, prix);
+                break;
+            case 5:
+                System.out.println();
+                System.out.println("++++&&&Thank you for using Computer Inventory System!.&&&++++");
+                createBackup(inventory);
+
             default:
 
+        }
+
+    }
+
+    private static void createBackup(Computer[] inventory) {
+        System.out
+                .println("..For security reasons we will create a copy of this inventory, please check your directory");
+        if (inventory.length == 0)
+            return; // agregar una exception
+            PrintWriter pw = null;
+        for (Computer cop : inventory) {
+            try {
+                pw = new PrintWriter(new FileOutputStream("./backups/Machine" + cop.getSN() + ".txt", true));
+                pw.println(cop.toString());
+            } catch (Exception e) {
+                System.out.println("An unexpected error ocurred in the files");
+            }
+            pw.close();
         }
 
     }
@@ -224,7 +249,7 @@ public class Demo {
         int optionSelected = kb.nextInt();
         if (optionSelected > lenght) {
             System.out.println("The position is not in the inventory");
-        } else if (inventory[optionSelected] == null) { //saca error
+        } else if (inventory[optionSelected] == null) { // saca error
             String yn = "u";
 
             while (!(yn.toLowerCase().equals("n") || yn.toLowerCase().equals("y"))) {
@@ -232,7 +257,7 @@ public class Demo {
                         "The position is empty, Do you want to create a new Computer with new values? (Y) or back to main menu? (N)");
                 yn = kb.next();
                 if (yn.toLowerCase().equals("y")) {
-                    Computer[] auxComp = newComputers(inventory);//que hacer luegooooo?
+                    Computer[] auxComp = newComputers(inventory);// que hacer luegooooo?
                 } else if (yn.toLowerCase().equals("n")) {
                     printMenu(inventory);
                 }
@@ -276,15 +301,17 @@ public class Demo {
         return true;
 
     }
-    private static boolean emptyInventory(Computer[] inventory){
+
+    private static boolean emptyInventory(Computer[] inventory) {
         int spaceInventory = 0;
         for (int i = 0; i < inventory.length; i++) {
-                if (inventory[i] == null)   spaceInventory++;
-            }
-        if(spaceInventory == inventory.length || inventory.length == 0 || inventory == null){
+            if (inventory[i] == null)
+                spaceInventory++;
+        }
+        if (spaceInventory == inventory.length || inventory.length == 0 || inventory == null) {
             System.out.println("\n +++This inventory is empty =(, try add some computers++++");
-            return true; //all spaces are empties
-        } 
+            return true; // all spaces are empties
+        }
         return false;
     }
 
