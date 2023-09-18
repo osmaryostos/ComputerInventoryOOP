@@ -10,12 +10,16 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import exceptions.FileException;
+import exceptions.InputException;
 
 public class Demo {
     private static final String PASSWORD = "12345";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InputMismatchException {
         Date date = new Date();
         System.out.println(date);
         System.out.println("                          WELCOME! \n              SOFTWARE AND HARWARE COMPUTER STORE \n");
@@ -27,9 +31,10 @@ public class Demo {
                 System.out.println(" How many computers we can save today?...");
                 Scanner kb = new Scanner(System.in); // hacer una excepcion aqui
                 maxNumComputers = kb.nextInt();
-            } catch (Exception e) {
-                // throw new Exception("There is an error try again");
-                System.out.println("There is an error, try again");
+            } catch (InputMismatchException e) {
+                System.out.println(" Not valid type input, try again...");
+
+               
             }
         }
         // B.1.b) Array inventory is created
@@ -63,7 +68,7 @@ public class Demo {
             try {
                 Scanner kb = new Scanner(System.in);
                 optionSelected = kb.nextInt();
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Please try again");
             }
 
@@ -90,7 +95,7 @@ public class Demo {
             try {
 
                 optionSelected = kb.nextInt();
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Please try again");
             }
 
@@ -215,7 +220,12 @@ public class Demo {
             case 5:
                 System.out.println();
                 System.out.println("++++&&&Thank you for using Computer Inventory System!.&&&++++");
-                createBackup(inventory);
+                try {
+                    createBackup(inventory);
+                }catch (Exception e) {
+                    String s = e.getMessage();
+                    System.out.println(s);
+                }
 
             default:
 
@@ -223,7 +233,7 @@ public class Demo {
 
     }
 
-    private static void createBackup(Computer[] inventory) {
+    private static void createBackup(Computer[] inventory) throws FileException {
         System.out
                 .println("..For security reasons we will create a copy of this inventory, please check your directory");
         if (inventory.length == 0)
@@ -234,7 +244,7 @@ public class Demo {
                 pw = new PrintWriter(new FileOutputStream("./backups/Machine" + cop.getSN() + ".txt", true));
                 pw.println(cop.toString());
             } catch (Exception e) {
-                System.out.println("An unexpected error ocurred in the files");
+                throw new FileException("!An unexpected error ocurred in the files...");
             }
             pw.close();
         }
