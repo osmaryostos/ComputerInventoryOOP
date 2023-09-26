@@ -69,8 +69,9 @@ public class Computer {
 
     @Override
     public String toString() {
+        
         return 
-                "Brand:" + brand + '\n' +
+                "\nBrand:" + brand + '\n' +
                 "ComputerModel:" + model + '\n' +
                 "SN:" + SN + '\n' +
                 "ComputerPrice=" + price + '\n';

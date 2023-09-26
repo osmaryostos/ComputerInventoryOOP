@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import exceptions.EmptyInventory;
 import exceptions.FileException;
 import exceptions.InputException;
 
@@ -140,15 +141,12 @@ public class Demo {
     }
 
     private static Computer[] findCheaperThan(Computer[] inventory, double prix) {
-        if (emptyInventory(inventory)) {
-            return inventory;
-        }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
         System.out.println("////List of computers founded/////");
         for (int i = 0; i < inventory.length; i++) {
 
-            if (inventory[i].getPrice() <= prix) {
+            if (inventory[i] != null && inventory[i].getPrice() <= prix) {
                 System.out.println(inventory[i].toString());
                 // Copy constructor
                 Computer cfilter = new Computer(inventory[i]);
@@ -161,14 +159,11 @@ public class Demo {
     }
 
     private static Computer[] findComputersByBrand(Computer[] inventory, String brand) {
-        if (emptyInventory(inventory)) {
-            return inventory;
-        }
         Computer[] auxinventory = new Computer[inventory.length];
         int j = 0;
         System.out.println("////List of computers founded/////");
         for (int i = 0; i < inventory.length; ++i) {
-            if (inventory[i].getBrand().equals(brand)) {
+            if (inventory[i] != null && inventory[i].getBrand().equals(brand)) {
 
                 System.out.println(inventory[i].toString());
                 // Copy constructor
@@ -210,9 +205,15 @@ public class Demo {
                 System.out.println("Enter Brand to search Serial:");
                 String brand = kb.next();
                 Computer[] auxinventory;
+                if (emptyInventory(inventory)) {
+                    break;
+                }
                 auxinventory = findComputersByBrand(inventory, brand);
                 break;
             case 4:
+                if (emptyInventory(inventory)) {
+                    break;
+                }
                 System.out.println("Enter Price:");
                 double prix = kb.nextInt();
                 auxinventory = findCheaperThan(inventory, prix);
@@ -222,6 +223,9 @@ public class Demo {
                 System.out.println("++++&&&Thank you for using Computer Inventory System!.&&&++++");
                 try {
                     createBackup(inventory);
+                }catch (EmptyInventory e) {
+                    String s = e.getMessage();
+                    System.out.println(s);
                 }catch (Exception e) {
                     String s = e.getMessage();
                     System.out.println(s);
@@ -233,11 +237,12 @@ public class Demo {
 
     }
 
-    private static void createBackup(Computer[] inventory) throws FileException {
+    private static void createBackup(Computer[] inventory) throws FileException, EmptyInventory {
         System.out
                 .println("..For security reasons we will create a copy of this inventory, please check your directory");
         if (inventory.length == 0)
-            return; // agregar una exception
+            throw new EmptyInventory();
+
             PrintWriter pw = null;
         for (Computer cop : inventory) {
             try {
@@ -252,7 +257,7 @@ public class Demo {
     }
 
     private static Computer[] updateComputer(Computer[] inventory) {
-        // System.out.println("recibo" + Arrays.toString(inventory));
+
         Scanner kb = new Scanner(System.in);
         int lenght = inventory.length;
         System.out.println("Please Enter the position of computer you need to update, less than " + lenght + " ...");
@@ -319,7 +324,7 @@ public class Demo {
                 spaceInventory++;
         }
         if (spaceInventory == inventory.length || inventory.length == 0 || inventory == null) {
-            System.out.println("\n +++This inventory is empty =(, try add some computers++++");
+            System.out.println("\n +++This inventory is empty =(, try adding some computers++++");
             return true; // all spaces are empties
         }
         return false;
@@ -357,10 +362,10 @@ public class Demo {
                     continue;
                 }
             }
-
-        }
-        // Check space on inventory
+         // Check space on inventory
         System.out.println(Arrays.toString(inventory));
+        }
+   
         return inventory;
 
     }
